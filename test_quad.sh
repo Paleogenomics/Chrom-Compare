@@ -341,8 +341,125 @@ else
     echo "  * PASS"
 fi
 
-N_PASS=$[ $TOTAL - $COUNTER ]
 
+# Test 22
+echo 'Test 22: Input files all identical, -W window_size = 65'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/first.fa -3 t/first.fa -4 t/first.fa -W 65'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 65 65 0 0 0 0 0 0 0\n65 130 65 0 0 0 0 0 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
+# Test 23
+echo 'Test 23: Input files all identical, -W window_size = 60'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/first.fa -3 t/first.fa -4 t/first.fa -W 60'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 60 60 0 0 0 0 0 0 0\n60 120 60 0 0 0 0 0 0 0\n120 130 10 0 0 0 0 0 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
+# Test 24
+echo 'Test 24: win tests win1 win1 win2 win2, -W window_size = 80'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/win1.fa -2 t/win1.fa -3 t/win2.fa -4 t/win2.fa -W 80'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 80 40 0 0 0 0 40 0 0\n80 160 40 0 0 0 0 40 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+# Test 25
+echo 'Test 25: win tests win1 win1 win2 win2, -W window_size = 40'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/win1.fa -2 t/win1.fa -3 t/win2.fa -4 t/win2.fa -W 40'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 40 20 0 0 0 0 20 0 0\n40 80 20 0 0 0 0 20 0 0\n80 120 20 0 0 0 0 20 0 0\n120 160 20 0 0 0 0 20 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+# Test 26
+echo 'Test 26: win tests win1 win1 win2 win2, -W window_size = 20'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/win1.fa -2 t/win1.fa -3 t/win2.fa -4 t/win2.fa -W 20'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 20 20 0 0 0 0 0 0 0\n20 40 0 0 0 0 0 20 0 0\n40 60 20 0 0 0 0 0 0 0\n60 80 0 0 0 0 0 20 0 0\n80 100 20 0 0 0 0 0 0 0\n100 120 0 0 0 0 0 20 0 0\n120 140 20 0 0 0 0 0 0 0\n140 160 0 0 0 0 0 20 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+# Test 27
+echo 'Test 27: win tests win1 win1 win2 win2, -W window_size = 99'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/win1.fa -2 t/win1.fa -3 t/win2.fa -4 t/win2.fa -W 99'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 99 59 0 0 0 0 40 0 0\n99 160 21 0 0 0 0 40 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+# Test 28
+echo 'Test 28: win tests win1 win1 win2 win2, -W window_size = 200'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/win1.fa -2 t/win1.fa -3 t/win2.fa -4 t/win2.fa -W 200'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 160 80 0 0 0 0 80 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
+
+# Final Results
+N_PASS=$[ $TOTAL - $COUNTER ]
 echo 
 echo "quad-aln-report tests complete:"
 echo "$N_PASS out of $TOTAL passed"

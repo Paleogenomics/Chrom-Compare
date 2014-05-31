@@ -483,9 +483,7 @@ void output_summary( const QUADAP aln, const int start, const int end ) {
 
 /* Takes the QUADAP aln and the user-specified window_size
    Prints the counts of same and divergent positions over
-   each window. Importantly, only prints _complete_ windows;
-   The last incomplete window of h_len % window_size will 
-   not be written out. */
+   each window. */ 
 void output_one_line_windows( const QUADAP aln, int window_size ) {
   int start = 0;
   int end;
@@ -498,6 +496,10 @@ void output_one_line_windows( const QUADAP aln, int window_size ) {
     start += window_size;
     end   = start + window_size;
   }
+  /* write out the remaining fragment of a window */
+  if ( start < aln->h_len ) {
+    output_summary( aln, start, aln->h_len );
+  } 
 }
 
 /* Takes a kmer, its length, and a populated diverg_counts[]
