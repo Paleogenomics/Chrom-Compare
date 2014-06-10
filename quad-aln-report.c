@@ -31,6 +31,7 @@ char read_fasta_seq( FILE* fp, char* seq );
 inline char revcom_base( const char base );
 QUADAP init_QUADAP( void );
 void output_summary( const QUADAP aln, const int start, const int end );
+void output_one_line_windows( const QUADAP aln, int window_size );
 			      
 void count_diverg( const QUADAP aln, const int start, const int end, int diverg_counts[] );
 inline int valid_base( char b );
@@ -202,8 +203,12 @@ int main( int argc, char* argv[] ) {
   }
 
   /* Make output */
-  output_summary( aln, 0, aln->h_len );
-
+  if ( window_size ) {
+    output_one_line_windows( aln, window_size ); 
+  }
+  else {
+    output_summary( aln, 0, aln->h_len );
+  }
   exit( 0 );
 }
 
@@ -472,6 +477,29 @@ void output_summary( const QUADAP aln, const int start, const int end ) {
 		  count4kmer( "TAAT", 4, diverg_counts ) +
 		  count4kmer( "TCCT", 4, diverg_counts ) +
 		  count4kmer( "TGGT", 4, diverg_counts )) );
+}
+
+
+
+/* Takes the QUADAP aln and the user-specified window_size
+   Prints the counts of same and divergent positions over
+   each window. */ 
+void output_one_line_windows( const QUADAP aln, int window_size ) {
+  int start = 0;
+  int end;
+
+  /* Initialize */
+  end = start + window_size;
+  
+  while( end <= aln->h_len ) {
+    output_summary( aln, start, end );
+    start += window_size;
+    end   = start + window_size;
+  }
+  /* write out the remaining fragment of a window */
+  if ( start < aln->h_len ) {
+    output_summary( aln, start, aln->h_len );
+  } 
 }
 
 /* Takes a kmer, its length, and a populated diverg_counts[]
