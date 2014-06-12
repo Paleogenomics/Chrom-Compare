@@ -456,6 +456,22 @@ else
     echo "  * PASS"
 fi
 
+# Test 29
+echo 'Test 28: three and four allelic sites.'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/all_configs1.fa -2 t/all_configs2.fa -3 t/all_configs3.fa -4 t/all_configs4.fa'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 14 1 1 1 1 1 1 1 1'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
 
 
 # Final Results
