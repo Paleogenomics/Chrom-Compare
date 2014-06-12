@@ -449,7 +449,7 @@ void output_summary( TRIAP aln ) {
     }
   }
   
-  printf( "# All the same, C=H=N\n" );
+  printf( "# All the same, 1st=2nd=3rd\n" );
   for( h = 0; h <= 3; h++ ) {
     diverg_kmer[0] = bases[h];
     diverg_kmer[1] = bases[h];
