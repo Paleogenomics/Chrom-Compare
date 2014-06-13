@@ -59,7 +59,7 @@ def wt_jk_variance( n_blocks, d_global, jk_dstat_vals, jk_est, h_weights ):
     for j in range(n_blocks):
         var_est_sum += (1/(h_weights[j]-1)) \
                         * ((pseudo_val_est[j] - jk_est) ** 2)
-    return (1/n_blocks) * var_est_sum
+    return (1/float(n_blocks)) * var_est_sum
 
 
 def calc_dstat_wt_block_jackknife( counts_abba, counts_baba ):
@@ -67,14 +67,14 @@ def calc_dstat_wt_block_jackknife( counts_abba, counts_baba ):
         This is described in section 2.3 Delete-m_j jackknife.
         I'll preserve the notation and describe it in terms of our 
         application. """
-    n_abba = numpy.array(counts_abba) 
-    n_baba = numpy.array(counts_baba) 
-    
+    n_abba = numpy.array(counts_abba, dtype=numpy.float) 
+    n_baba = numpy.array(counts_baba, dtype=numpy.float) 
+     
     d_global = dstat_all_win(n_abba, n_baba)    # theta_hat_n
     n_blocks = len(n_abba)                      # g
     snps_total = n_abba.sum() + n_baba.sum()    # n
     snps_block = n_abba + n_baba                # m_j
-    h_weights = snps_total / snps_block         # h
+    h_weights = snps_total / snps_block.astype(float)         # h
 
     # Estimate D 
     jk_est, jk_d_vals = wt_jk_estimator( n_blocks, d_global, n_abba, n_baba, \
@@ -110,7 +110,7 @@ def main(argv=None):
 
     jk_std_err = numpy.sqrt(jk_var_est)
 
-    print "%f\t%f\n" % (jk_est, jk_std_err)
+    print "%f\t%f" % (jk_est, jk_std_err)
 
     return 0
 
