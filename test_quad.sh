@@ -456,6 +456,38 @@ else
     echo "  * PASS"
 fi
 
+# Test 29
+echo 'Test 29: three and four allelic sites.'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/all_configs1.fa -2 t/all_configs2.fa -3 t/all_configs3.fa -4 t/all_configs4.fa'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 14 1 1 1 1 1 1 1 1'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
+# Test 30
+echo 'Test 30: -I option. win tests win1 win1 win2 win2, -W window_size = 20'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/win1.fa -2 t/win1.fa -3 t/win2.fa -4 t/win2.fa -W 20 -I Hi'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'Hi 0 20 20 0 0 0 0 0 0 0\nHi 20 40 0 0 0 0 0 20 0 0\nHi 40 60 20 0 0 0 0 0 0 0\nHi 60 80 0 0 0 0 0 20 0 0\nHi 80 100 20 0 0 0 0 0 0 0\nHi 100 120 0 0 0 0 0 20 0 0\nHi 120 140 20 0 0 0 0 0 0 0\nHi 140 160 0 0 0 0 0 20 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
 
 
 # Final Results
