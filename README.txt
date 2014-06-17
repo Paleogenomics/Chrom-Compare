@@ -67,6 +67,13 @@ errors. The first sequence is typically an outgroup sequence. The
 divergence reported this way can be stated as how far back the TMRCA
 of the second and third sequence is as a percentage of how far back
 the TMRCA of the second and first sequence is.
+
+The format of the output is is a space-delimited table with the
+following columns:
+1. Divergence bin (<= this percent divergence)
+2. Number of regions in the bin
+3. Fraction of all regions in this bin
+4. Cummulative fraction of all regions in the and lower bins
  
 *** quad-aln-report ***
 This program is similar in concept to tri-aln-report. However, it does

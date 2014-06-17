@@ -59,7 +59,7 @@ sub init {
 	print( "Rounded down to the nearest percentile.\n" );
 	exit( 0 );
     }
-    unless( defined( $m_DEF ) ) {
+    unless( defined( $opt_m ) ) {
 	$opt_m = $m_DEF;
     }
 }
