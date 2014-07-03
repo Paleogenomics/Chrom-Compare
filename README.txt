@@ -87,4 +87,13 @@ START END AAAA BAAA ABAA AABA BBBA BBAA BABA ABBA
 The same -W and -I options are available as in tri-aln-report to
 specify windows and an identifier to include in the output.
 
-
+*** find-ancestral ***
+find-ancestral -a <ancestral fasta> -f <focal fasta> -C [mask CpG sites]
+            -i [chromosome ID to put in first column] <aligned chrs...>
+            -m [minimum number of sequences that must be different; default = 1]
+            [aligned chrs...]
+Scans the input chromosomes to find and report positions where the focal
+input sequence matches the ancestral input sequence and all other input
+sequences match one another but are different. This is meant to find
+positions where the focal sequence is an outgroup to all other input
+sequences.
