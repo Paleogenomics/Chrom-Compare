@@ -82,14 +82,16 @@ def calc_dstat_wt_block_jackknife( counts_abba, counts_baba ):
     # Estimate variance
     jk_var_est = wt_jk_variance( n_blocks, d_global, jk_d_vals, \
                                  jk_est, h_weights )
-    return jk_est, jk_var_est
+    return d_global, jk_est, jk_var_est
 
 def main(argv=None):
-    """ Calculates D with standard error by jackknife """
+    """ Takes import from quad-aln-report and calculates D statistic,
+        jacknife estimate of D with standard error and Z-score. """
     if argv is None:
         argv = sys.argv
 
-    parser = argparse.ArgumentParser("")
+    parser = argparse.ArgumentParser(
+                "Calculates D with standard error by weighted block jackknife")
 #   parser.add_argument('-f', '--file', dest='in_file', type=str, \
 #                        metavar='in.fa', help="Fasta input file.")
 #   parser.add_argument('-n', dest='keep_ns', default=False, \
@@ -109,12 +111,14 @@ def main(argv=None):
         sys.stderr.write('No blocks with ABBA/BABA sites found.\n')
         sys.exit(0)
 
-    jk_est, jk_var_est = \
+    d_stat, d_jk_est, d_jk_var_est = \
         calc_dstat_wt_block_jackknife( counts_abba, counts_baba )
 
-    jk_std_err = numpy.sqrt(jk_var_est)
+    d_jk_std_err = numpy.sqrt(d_jk_var_est)
 
-    print "%f\t%f" % (jk_est, jk_std_err)
+    z_score = d_stat / d_jk_std_err
+
+    print "%f\t%f\t%f\t%f\t%f" % (d_stat, d_jk_est, d_jk_std_err, z_score)
 
     return 0
 
