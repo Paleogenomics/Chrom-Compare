@@ -106,7 +106,7 @@ def main(argv=None):
     counts_abba, counts_baba = read_quad_aln( rep_in )
 
     if len(counts_abba) == 0:
-        sys.stderr('No blocks with ABBA/BABA sites found.')
+        sys.stderr.write('No blocks with ABBA/BABA sites found.\n')
         sys.exit(0)
 
     jk_est, jk_var_est = \
