@@ -15,6 +15,7 @@ import sys
 import argparse
 import numpy
 
+
 def read_quad_aln( rep_in ):
     """ Reads the table produced by quad-aln-report """
     counts_abba = list()
@@ -38,6 +39,7 @@ def dstat_all_win( n_abba_win, n_baba_win ):
     n_baba = n_baba_win.sum()
     return (n_abba - n_baba) / float(n_abba + n_baba)
 
+
 def wt_jk_estimator( n_blocks, d_global, n_abba, n_baba, \
                      snps_total, snps_block ):
     """ Delete-m_j jackknife estimator from Busing et al 
@@ -50,6 +52,7 @@ def wt_jk_estimator( n_blocks, d_global, n_abba, n_baba, \
         jk_dstat_vals[j] = dstat_all_win( n_abba[mask], n_baba[mask] )
         jk_wt_dstat_sum += (1 - (snps_block[j]/snps_total)) * jk_dstat_vals[j] 
     return (n_blocks * d_global) - jk_wt_dstat_sum, jk_dstat_vals
+
 
 def wt_jk_variance( n_blocks, d_global, jk_dstat_vals, jk_est, h_weights ):
     """ Delete-m_j jackknife variance estimator from Busing et al 
@@ -83,6 +86,7 @@ def calc_dstat_wt_block_jackknife( counts_abba, counts_baba ):
     jk_var_est = wt_jk_variance( n_blocks, d_global, jk_d_vals, \
                                  jk_est, h_weights )
     return d_global, jk_est, jk_var_est
+
 
 def main(argv=None):
     """ Takes import from quad-aln-report and calculates D statistic,
@@ -118,7 +122,7 @@ def main(argv=None):
 
     z_score = d_stat / d_jk_std_err
 
-    print "%f\t%f\t%f\t%f\t%f" % (d_stat, d_jk_est, d_jk_std_err, z_score)
+    print "%f\t%f\t%f\t%f" % (d_stat, d_jk_est, d_jk_std_err, z_score)
 
     return 0
 
