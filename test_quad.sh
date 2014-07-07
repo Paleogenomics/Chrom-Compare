@@ -490,6 +490,91 @@ else
 fi
 
 
+# Test 31
+echo 'Test 31: 1,2,3,4 input files, Whole sequence (no window) (no tvs)'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/second.fa -3 t/third.fa -4 t/fourth.fa -v'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR='0 130 118 3 3 4 0 0 1 1'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
+# Test 32
+echo 'Test 32: 1,2,3,(4+tvs) input files, Whole sequence (no window) (with tvs)'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/second.fa -3 t/third.fa -4 t/fourth_tvs.fa'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR='0 130 110 3 3 4 8 0 1 1'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
+# Test 33
+echo 'Test 33: 1,2,3,(4+tvs) input files, Whole sequence (no window) (no tvs)'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/second.fa -3 t/third.fa -4 t/fourth_tvs.fa -v'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR='0 130 110 3 3 4 0 0 1 1'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
+# Test 34
+echo 'Test 34: 1,2,3,(4+tvs) input files, Whole sequence (window=70) (with tvs)'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/second.fa -3 t/third.fa -4 t/fourth_tvs.fa -W 70'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 70 57 3 3 1 4 0 1 1\n70 130 53 0 0 3 4 0 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
+# Test 35
+echo 'Test 35: 1,2,3,(4+tvs) input files, Whole sequence (window=70) (no tvs)'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/second.fa -3 t/third.fa -4 t/fourth_tvs.fa -v -W 70'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'0 70 57 3 3 1 0 0 1 1\n70 130 53 0 0 3 0 0 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+
+else
+    echo "  * PASS"
+fi
+
+
 # Final Results
 N_PASS=$[ $TOTAL - $COUNTER ]
 echo 
