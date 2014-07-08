@@ -43,11 +43,15 @@ void mask_cpg( QUADAP aln );
 int all_diff( const int diverg_counts[] );
 int count4kmer( char* kmer, unsigned int kmer_len,
 		int* diverg_counts );
+void output_bed_windows( const QUADAP aln, const char* bed_fn,
+			 const char* chr_mask );
 
 void help ( void ) {
   printf( "quad-aln-report -1 [first fa] -2 [second fa] -3 [third fa] -4 [fourth fa; ancestral]\n" );
   printf( "               -o [make one-line simplified output of counts]\n" );
-  printf( "               -W [make one-line simplified output over windows of this size\n" );
+  printf( "               -W [make one-line simplified output over windows of this size]\n" );
+  printf( "               -b [make one-line simplified output over regions in this bedfile\n" );
+  printf( "                   must also specify -c to specify which chromosome/identifier]\n" );
   printf( "               -M [optional mask fn]\n" );
   printf( "               -N [mask is a negative mask - ignore regions in mask]\n" );
   printf( "               -c [chromosome name to use with mask]\n" );
@@ -70,6 +74,7 @@ int main( int argc, char* argv[] ) {
   char chr_mask[MAX_ID_LEN+1];
   char mfa_fn[MAX_FN_LEN];
   char mask_fn[MAX_FN_LEN];
+  char bed_fn[MAX_FN_LEN];
   char first_fn[MAX_FN_LEN];
   char second_fn[MAX_FN_LEN];
   char third_fn[MAX_FN_LEN];
@@ -78,7 +83,8 @@ int main( int argc, char* argv[] ) {
   char evid_code_accept[MAX_ID_LEN];
   int ich;
   int mask = 0;
-  int ecm = 0;
+  int bed  = 0;
+  int ecm  = 0;
   int cpg_mask = 0;
   int neg_mask = 0;
   int mask_seg_width = 0;
@@ -100,7 +106,7 @@ int main( int argc, char* argv[] ) {
   }
 
   /* Process input arguments */
-  while( (ich=getopt( argc, argv, "1:2:3:4:M:W:c:w:e:E:I:CNo" )) != -1 ) {
+  while( (ich=getopt( argc, argv, "1:2:3:4:M:W:b:c:w:e:E:I:CNo" )) != -1 ) {
     switch(ich) {
     case '1' :
       strcpy( first_fn, optarg );
@@ -136,6 +142,11 @@ int main( int argc, char* argv[] ) {
       mask = 1;
       break;
       
+    case 'b' :
+      strcpy (bed_fn, optarg );
+      bed = 1;
+      break;
+
     case 'N' :
       neg_mask = 1;
       break;
@@ -203,6 +214,9 @@ int main( int argc, char* argv[] ) {
   }
 
   /* Make output */
+  if ( bed ) {
+    output_bed_windows( aln, bed_fn, chr_mask );
+  }
   if ( window_size ) {
     output_one_line_windows( aln, window_size ); 
   }
@@ -552,6 +566,34 @@ QUADAP init_QUADAP( void ) {
 
   return aln;
 }
+
+void output_bed_windows( const QUADAP aln, const char* bed_fn,
+			 const char* chr_mask ) {
+  FILE* f;
+  char chr[MAX_ID_LEN];
+  char line[MAX_LINE_LEN+1];
+  int start, end;
+
+  f = fileOpen( bed_fn, "r" );
+  while( fgets( line, MAX_LINE_LEN, f ) != NULL ) {
+    if ( sscanf( line, "%s %u %u", chr, &start, &end ) 
+	 == 3 ) {
+      /* The right chromosome? */
+      if ( strcmp( chr, chr_mask ) == 0 ) {
+	/* Range check */
+	if ( start < 0 ) {
+	  start = 0;
+	}
+	if ( end > aln->h_len ) {
+	  end = aln->h_len;
+	}
+	output_summary( aln, start, end );
+      }
+    }
+  }
+  return;
+}
+
 
 /* Mask out regions not mentioned in input file 
    INPUT FILE looks like this:

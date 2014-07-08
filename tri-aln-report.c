@@ -34,8 +34,7 @@ void output_one_line_summary( const TRIAP aln,
 			      int start, int end );
 void output_one_line_windows( const TRIAP aln, int window_size );
 inline int valid_base( char b );
-void mask_from_fn( char* mask_fn, char* mask, const char* chr_mask,
-		   const int mask_seg_width, const int neg_mask );
+void output_bed_windows( const char* mask_fn, const char* chr_mask, const TRIAP aln );
 void mask_evidence_code( char* mask, const char evid_code_fn[],
 			 const char evid_code_accep[] );
 void mask_cpg( TRIAP aln );
@@ -47,12 +46,10 @@ void help ( void ) {
   printf( "tri-aln-report -1 [first fa] -2 [second fa] -3 [third fa]\n" );
   printf( "               -o [make one-line simplified output of counts]\n" );
   printf( "               -W [make one-line simplified output over windows of this size\n" );
-  printf( "               -M [optional mask fn]\n" );
+  printf( "               -b [optional bedfile of regions to consider; must use -c also]\n" );
   printf( "               -N [mask is a negative mask - ignore regions in mask]\n" );
-  printf( "               -c [chromosome name to use with mask]\n" );
+  printf( "               -c [chromosome name to use with bedfile]\n" );
   printf( "               -C [mask CpG sites]\n" );
-  printf( "               -w [widen mask segments to this width\n" );
-  printf( "                   if they are shorter]\n" );
   printf( "               -e [evidence code filename]\n" );
   printf( "               -E [evidence code string to accept]\n" );
   printf( "               -I [identifier to use as extra, first column in simplified output]\n" );
@@ -97,7 +94,7 @@ int main( int argc, char* argv[] ) {
   }
 
   /* Process input arguments */
-  while( (ich=getopt( argc, argv, "1:2:3:M:W:c:w:e:E:I:CNo" )) != -1 ) {
+  while( (ich=getopt( argc, argv, "1:2:3:b:W:c:w:e:E:I:CNo" )) != -1 ) {
     switch(ich) {
     case '1' :
       strcpy( first_fn, optarg );
@@ -124,7 +121,7 @@ int main( int argc, char* argv[] ) {
       strcpy( aln->identifier, optarg );
       break;
 
-    case 'M' :
+    case 'b' :
       strcpy( mask_fn, optarg );
       mask = 1;
       break;
@@ -160,12 +157,6 @@ int main( int argc, char* argv[] ) {
     }
   }
 
-  /* If mask specified, do it! */
-  if ( mask ) {
-    mask_from_fn( mask_fn, aln->mask, chr_mask, 
-		  mask_seg_width, neg_mask );
-  }
-
   /* Load up the three input files */
   add_fa( first_fn, aln, 0 );
   add_fa( second_fn, aln, 1 );
@@ -185,13 +176,12 @@ int main( int argc, char* argv[] ) {
     mask_cpg( aln );
   }
 
-  /* If evidence code mask is specified, do it */
-  if ( ecm ) {
-    mask_evidence_code(aln->mask, evid_code_fn, 
-		       evid_code_accept );
+    /* Make output */
+  if (mask) {
+    /* User wants bedfile output over regions */
+    output_bed_windows( mask_fn, chr_mask, aln );
+    exit( 0 );
   }
-
-  /* Make output */
   if ( one_line_out ) {
     output_one_line_summary( aln, 0, aln->h_len );
   }
@@ -297,6 +287,39 @@ void add_fa( char* fn, TRIAP aln, int pos ) {
     c = read_fasta_seq( fa, aln->n_seq );
     return;
   }
+}
+
+/* Mask out regions not mentioned in input file 
+   INPUT FILE looks like this:
+   chr1 1000 2000
+   chr1 2501 34195
+   etc.
+*/  
+void output_bed_windows( const char* mask_fn, const char* chr_mask, const TRIAP aln ) {
+  FILE* f;
+  char chr[MAX_ID_LEN];
+  char line[MAX_LINE_LEN+1];
+  int start, end;
+  size_t i;
+
+  f = fileOpen( mask_fn, "r" );
+  while( fgets( line, MAX_LINE_LEN, f ) != NULL ) {
+    if ( sscanf( line, "%s\t%u\t%u", chr, &start, &end ) 
+	 == 3 ) {
+      /* The right chromosome? */
+      if ( strcmp( chr, chr_mask ) == 0 ) {
+	/* Range check */
+	if ( start < 0 ) {
+	  start = 0;
+	}
+	if ( end > aln->h_len ) {
+	  end = aln->h_len;
+	}
+	output_one_line_summary( aln, start, end );
+      }
+    }
+  }
+  fclose(f);
 }
 
 /* Takes the TRIAP aln and the user-specified window_size
@@ -599,63 +622,6 @@ TRIAP init_TRIAP( void ) {
 
   return aln;
 }
-
-/* Mask out regions not mentioned in input file 
-   INPUT FILE looks like this:
-   chr1 1000 2000
-   chr1 2501 34195
-   etc.
-*/  
-void mask_from_fn( char* mask_fn, char* mask, const char* chr_mask,
-		   const int mask_seg_width, const int neg_mask ) {
-  FILE* f;
-  char chr[MAX_ID_LEN];
-  char line[MAX_LINE_LEN+1];
-  unsigned int start, end, midpoint;
-  size_t i;
-
-  /* Since there is a mask, figure if it's a positive or negative
-     mask. If negative, everything is in except what's mentioned in 
-     the mask. If it's not, everything is out by default */
-  if ( neg_mask ) {
-    memset( mask, 1, MAX_CHR_LEN );
-  }
-  else  {
-    memset( mask, 0, MAX_CHR_LEN );
-  }
-
-  f = fileOpen( mask_fn, "r" );
-  while( fgets( line, MAX_LINE_LEN, f ) != NULL ) {
-    if ( sscanf( line, "%s %u %u", chr, &start, &end ) 
-	 == 3 ) {
-      /* The right chromosome? */
-      if ( strcmp( chr, chr_mask ) == 0 ) {
-	if ( (mask_seg_width == 0) ||
-	     (mask_seg_width <= (end-start+1)) ) {
-	  if ( neg_mask ) {
-	    memset( &mask[start], 0, (end-start+1) );
-	  }
-	  else {
-	    memset( &mask[start], 1, (end-start+1) );
-	  }
-	}
-	else {
-	  midpoint = (end + start)/2;
-	  start = midpoint - mask_seg_width/2;
-	  end = start + mask_seg_width - 1;
-	  if ( neg_mask ) {
-	    memset( &mask[start], 0, (end-start+1) );
-	  }
-	  else {
-	    memset( &mask[start], 1, (end-start+1) );
-	  }
-	}
-      }
-    }
-  }
-  fclose(f);
-}
-
 
 /** fileOpen **/
 FILE * fileOpen(const char *name, char access_mode[]) {
