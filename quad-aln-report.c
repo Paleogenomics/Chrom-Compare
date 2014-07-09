@@ -68,6 +68,8 @@ void help ( void ) {
   printf( "matching alleles. The assumption is that the fourth (last) input\n" );
   printf( "sequence is the ancestral sequence. The default output is this:\n" );
   printf( "START END AAAA BAAA ABAA AABA BBBA BBAA BABA ABBA\n" );
+  printf( "If you specify both -b and -W then you will get -b and you should not\n" );
+  printf( "do that anyway because it does not make sense.\n" );
   exit( 0 );
 }
 
@@ -225,11 +227,13 @@ int main( int argc, char* argv[] ) {
   if ( bed ) {
     output_bed_windows( aln, bed_fn, chr_mask, tvs_only );
   }
-  if ( window_size ) {
-    output_one_line_windows( aln, window_size, tvs_only ); 
-  }
   else {
-    output_summary( aln, 0, aln->h_len, tvs_only );
+    if ( window_size ) {
+    output_one_line_windows( aln, window_size, tvs_only ); 
+    }
+    else {
+      output_summary( aln, 0, aln->h_len, tvs_only );
+    }
   }
   exit( 0 );
 }
