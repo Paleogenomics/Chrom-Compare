@@ -97,3 +97,15 @@ input sequence matches the ancestral input sequence and all other input
 sequences match one another but are different. This is meant to find
 positions where the focal sequence is an outgroup to all other input
 sequences.
+
+*** Additional Scripts ***
+
+*** quad_dstat_wt_jk ***
+Calculated D statistic with weighted block jackknife to estimated standard
+error. Input is from quad-aln-report (usually concatenated results from 
+multiple chromosomes) and writes out:
+    1) D
+    2) D estimated from jackknife (should be the same/almost the same as D)
+    3) Standard Error from weighted block jackknife
+    4) Z-Score (raw from D and Standard Error, no correction for mulitple test)
+
