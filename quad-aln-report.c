@@ -30,8 +30,10 @@ void add_fa( char* fn, QUADAP aln, int pos );
 char read_fasta_seq( FILE* fp, char* seq );
 inline char revcom_base( const char base );
 QUADAP init_QUADAP( void );
-void output_summary( const QUADAP aln, const int start, const int end );
-void output_one_line_windows( const QUADAP aln, int window_size );
+void output_summary( const QUADAP aln, const int start, const int end, const int tvs_only );
+void output_counts_all( int diverg_counts[] );
+void output_counts_tvs( int diverg_counts[] );
+void output_one_line_windows( const QUADAP aln, int window_size, const int tvs_only );
 			      
 void count_diverg( const QUADAP aln, const int start, const int end, int diverg_counts[] );
 inline int valid_base( char b );
@@ -44,7 +46,7 @@ int all_diff( const int diverg_counts[] );
 int count4kmer( char* kmer, unsigned int kmer_len,
 		int* diverg_counts );
 void output_bed_windows( const QUADAP aln, const char* bed_fn,
-			 const char* chr_mask );
+			 const char* chr_mask, const int tvs_only );
 
 void help ( void ) {
   printf( "quad-aln-report -1 [first fa] -2 [second fa] -3 [third fa] -4 [fourth fa; ancestral]\n" );
@@ -61,6 +63,7 @@ void help ( void ) {
   printf( "               -e [evidence code filename]\n" );
   printf( "               -E [evidence code string to accept]\n" );
   printf( "               -I [identifier to use as extra, first column in simplified output]\n" );
+  printf( "               -v [only report counts from transversions]\n" );
   printf( "Reports the number of positions with various configurations of\n" );
   printf( "matching alleles. The assumption is that the fourth (last) input\n" );
   printf( "sequence is the ancestral sequence. The default output is this:\n" );
@@ -90,6 +93,7 @@ int main( int argc, char* argv[] ) {
   int mask_seg_width = 0;
   int one_line_out   = 0;
   int window_size    = 0;
+  int tvs_only    = 0;
   QUADAP aln;
 
   /* No args - just help */
@@ -106,7 +110,7 @@ int main( int argc, char* argv[] ) {
   }
 
   /* Process input arguments */
-  while( (ich=getopt( argc, argv, "1:2:3:4:M:W:b:c:w:e:E:I:CNo" )) != -1 ) {
+  while( (ich=getopt( argc, argv, "1:2:3:4:M:W:b:c:w:e:E:I:CNov" )) != -1 ) {
     switch(ich) {
     case '1' :
       strcpy( first_fn, optarg );
@@ -171,6 +175,10 @@ int main( int argc, char* argv[] ) {
     case 'o' :
       one_line_out = 1;
       break;
+    
+    case 'v' :
+      tvs_only = 1;
+      break;
 
     default :
       help();
@@ -215,13 +223,13 @@ int main( int argc, char* argv[] ) {
 
   /* Make output */
   if ( bed ) {
-    output_bed_windows( aln, bed_fn, chr_mask );
+    output_bed_windows( aln, bed_fn, chr_mask, tvs_only );
   }
   if ( window_size ) {
-    output_one_line_windows( aln, window_size ); 
+    output_one_line_windows( aln, window_size, tvs_only ); 
   }
   else {
-    output_summary( aln, 0, aln->h_len );
+    output_summary( aln, 0, aln->h_len, tvs_only );
   }
   exit( 0 );
 }
@@ -369,7 +377,32 @@ void count_diverg( const QUADAP aln, int start, int end, int diverg_counts[] ) {
   return;
 }
 
-void output_summary( const QUADAP aln, const int start, const int end ) {
+
+/* Takes the QUADAP aln and the user-specified window_size
+   Prints the counts of same and divergent positions over
+   each window. */ 
+void output_one_line_windows( const QUADAP aln, int window_size, 
+                              const int tvs_only ) {
+  int start = 0;
+  int end;
+
+  /* Initialize */
+  end = start + window_size;
+  
+  while( end <= aln->h_len ) {
+    output_summary( aln, start, end, tvs_only );
+    start += window_size;
+    end   = start + window_size;
+  }
+  /* write out the remaining fragment of a window */
+  if ( start < aln->h_len ) {
+    output_summary( aln, start, aln->h_len, tvs_only );
+  } 
+}
+
+
+void output_summary( const QUADAP aln, const int start, 
+                     const int end, const int tvs_only ) {
   char diverg_kmer[5]; /* Holds a string of H1, H2, N, C sequence */
   size_t pos, h, inx;
   int diverg_counts[256];
@@ -387,13 +420,23 @@ void output_summary( const QUADAP aln, const int start, const int end ) {
   /* Output the region */
   printf( "%d %d ", start, end );
 
+  if (tvs_only) { 
+    output_counts_tvs( diverg_counts );
+  } 
+  else {
+    output_counts_all( diverg_counts );
+  }
+  printf( "\n" );
+}
 
+
+void output_counts_all( int diverg_counts[] ) {
   /* Print total number of all the same positions */
   printf( "%d ", (count4kmer( "AAAA", 4, diverg_counts ) +
 		  count4kmer( "CCCC", 4, diverg_counts ) +
 		  count4kmer( "GGGG", 4, diverg_counts ) +
 		  count4kmer( "TTTT", 4, diverg_counts )) );
-
+  
   /* Print total number of first guy is different positions */
   printf( "%d ", (count4kmer( "CAAA", 4, diverg_counts ) +
 		  count4kmer( "GAAA", 4, diverg_counts ) +
@@ -479,7 +522,7 @@ void output_summary( const QUADAP aln, const int start, const int end ) {
 		  count4kmer( "TGTG", 4, diverg_counts )) );
 
   /* Print total number of ABBA positions */
-  printf( "%d\n", (count4kmer( "ACCA", 4, diverg_counts ) +
+  printf( "%d", (count4kmer( "ACCA", 4, diverg_counts ) +
 		  count4kmer( "AGGA", 4, diverg_counts ) +
 		  count4kmer( "ATTA", 4, diverg_counts ) +
 		  count4kmer( "CAAC", 4, diverg_counts ) +
@@ -495,26 +538,84 @@ void output_summary( const QUADAP aln, const int start, const int end ) {
 
 
 
-/* Takes the QUADAP aln and the user-specified window_size
-   Prints the counts of same and divergent positions over
-   each window. */ 
-void output_one_line_windows( const QUADAP aln, int window_size ) {
-  int start = 0;
-  int end;
-
-  /* Initialize */
-  end = start + window_size;
+void output_counts_tvs( int diverg_counts[] ) {
+  /* Print total number of all the same positions */
+  printf( "%d ", (count4kmer( "AAAA", 4, diverg_counts ) +
+		  count4kmer( "CCCC", 4, diverg_counts ) +
+		  count4kmer( "GGGG", 4, diverg_counts ) +
+		  count4kmer( "TTTT", 4, diverg_counts )) );
   
-  while( end <= aln->h_len ) {
-    output_summary( aln, start, end );
-    start += window_size;
-    end   = start + window_size;
-  }
-  /* write out the remaining fragment of a window */
-  if ( start < aln->h_len ) {
-    output_summary( aln, start, aln->h_len );
-  } 
+  /* Print total number of first guy is different positions */
+  printf( "%d ", (count4kmer( "CAAA", 4, diverg_counts ) +
+		  count4kmer( "TAAA", 4, diverg_counts ) +
+		  count4kmer( "ACCC", 4, diverg_counts ) +
+		  count4kmer( "GCCC", 4, diverg_counts ) +
+		  count4kmer( "CGGG", 4, diverg_counts ) +
+		  count4kmer( "TGGG", 4, diverg_counts ) +
+		  count4kmer( "ATTT", 4, diverg_counts ) +
+		  count4kmer( "GTTT", 4, diverg_counts )) );
+
+  /* Print total number of second guy is different positions */
+  printf( "%d ", (count4kmer( "ACAA", 4, diverg_counts ) +
+		  count4kmer( "ATAA", 4, diverg_counts ) +
+		  count4kmer( "CACC", 4, diverg_counts ) +
+		  count4kmer( "CGCC", 4, diverg_counts ) +
+		  count4kmer( "GCGG", 4, diverg_counts ) +
+		  count4kmer( "GTGG", 4, diverg_counts ) +
+		  count4kmer( "TATT", 4, diverg_counts ) +
+		  count4kmer( "TGTT", 4, diverg_counts )) );
+
+  /* Print total number of third guy is different positions */
+  printf( "%d ", (count4kmer( "AACA", 4, diverg_counts ) +
+		  count4kmer( "AATA", 4, diverg_counts ) +
+		  count4kmer( "CCAC", 4, diverg_counts ) +
+		  count4kmer( "CCGC", 4, diverg_counts ) +
+		  count4kmer( "GGCG", 4, diverg_counts ) +
+		  count4kmer( "GGTG", 4, diverg_counts ) +
+		  count4kmer( "TTAT", 4, diverg_counts ) +
+		  count4kmer( "TTGT", 4, diverg_counts )) );
+
+  /* Print total number of fourth guy is different positions */
+  printf( "%d ", (count4kmer( "AAAC", 4, diverg_counts ) +
+		  count4kmer( "AAAT", 4, diverg_counts ) +
+		  count4kmer( "CCCA", 4, diverg_counts ) +
+		  count4kmer( "CCCG", 4, diverg_counts ) +
+		  count4kmer( "GGGC", 4, diverg_counts ) +
+		  count4kmer( "GGGT", 4, diverg_counts ) +
+		  count4kmer( "TTTA", 4, diverg_counts ) +
+		  count4kmer( "TTTG", 4, diverg_counts )) );
+
+  /* Print total number of BBAA positions */
+  printf( "%d ", (count4kmer( "AACC", 4, diverg_counts ) +
+		  count4kmer( "AATT", 4, diverg_counts ) +
+		  count4kmer( "CCAA", 4, diverg_counts ) +
+		  count4kmer( "CCGG", 4, diverg_counts ) +
+		  count4kmer( "GGCC", 4, diverg_counts ) +
+		  count4kmer( "GGTT", 4, diverg_counts ) +
+		  count4kmer( "TTAA", 4, diverg_counts ) +
+		  count4kmer( "TTGG", 4, diverg_counts )) );
+
+  /* Print total number of BABA positions */
+  printf( "%d ", (count4kmer( "ACAC", 4, diverg_counts ) +
+		  count4kmer( "ATAT", 4, diverg_counts ) +
+		  count4kmer( "CACA", 4, diverg_counts ) +
+		  count4kmer( "CGCG", 4, diverg_counts ) +
+		  count4kmer( "GCGC", 4, diverg_counts ) +
+		  count4kmer( "GTGT", 4, diverg_counts ) +
+		  count4kmer( "TATA", 4, diverg_counts ) +
+		  count4kmer( "TGTG", 4, diverg_counts )) );
+
+  /* Print total number of ABBA positions */
+  printf( "%d", (count4kmer( "ACCA", 4, diverg_counts ) +
+		  count4kmer( "ATTA", 4, diverg_counts ) +
+		  count4kmer( "CAAC", 4, diverg_counts ) +
+		  count4kmer( "CGGC", 4, diverg_counts ) +
+		  count4kmer( "GCCG", 4, diverg_counts ) +
+		  count4kmer( "GTTG", 4, diverg_counts ) +
+		  count4kmer( "TAAT", 4, diverg_counts ) +
+		  count4kmer( "TGGT", 4, diverg_counts )) );
 }
+
 
 /* Takes a kmer, its length, and a populated diverg_counts[]
    Returns the count for the divergence represented by this
@@ -568,7 +669,7 @@ QUADAP init_QUADAP( void ) {
 }
 
 void output_bed_windows( const QUADAP aln, const char* bed_fn,
-			 const char* chr_mask ) {
+			 const char* chr_mask, const int tvs_only ) {
   FILE* f;
   char chr[MAX_ID_LEN];
   char line[MAX_LINE_LEN+1];
@@ -587,7 +688,7 @@ void output_bed_windows( const QUADAP aln, const char* bed_fn,
 	if ( end > aln->h_len ) {
 	  end = aln->h_len;
 	}
-	output_summary( aln, start, end );
+	output_summary( aln, start, end, tvs_only );
       }
     }
   }
