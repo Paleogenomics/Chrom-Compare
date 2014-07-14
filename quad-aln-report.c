@@ -92,6 +92,7 @@ int main( int argc, char* argv[] ) {
   int ecm  = 0;
   int cpg_mask = 0;
   int neg_mask = 0;
+  int chr_mask_set = 0;
   int mask_seg_width = 0;
   int one_line_out   = 0;
   int window_size    = 0;
@@ -159,6 +160,7 @@ int main( int argc, char* argv[] ) {
 
     case 'c' :
       strcpy( chr_mask, optarg );
+      chr_mask_set = 1;
       break;
 
     case 'C' :
@@ -169,7 +171,7 @@ int main( int argc, char* argv[] ) {
       strcpy( evid_code_fn, optarg );
       ecm = 1;
       break;
-      
+ 
     case 'E' :
       strcpy( evid_code_accept, optarg );
       break;
@@ -190,6 +192,11 @@ int main( int argc, char* argv[] ) {
 
   /* If mask specified, do it! */
   if ( mask ) {
+    if (!chr_mask_set) {
+      fprintf( stderr, 
+        "Option '-M' requires chromosome name through '-c' option.\n" );
+      exit(1);  
+    }
     mask_from_fn( mask_fn, aln->mask, chr_mask, 
 		  mask_seg_width, neg_mask );
   }
@@ -225,6 +232,11 @@ int main( int argc, char* argv[] ) {
 
   /* Make output */
   if ( bed ) {
+    if (!chr_mask_set) {
+      fprintf( stderr, 
+        "Option '-b' requires chromosome name through '-c' option.\n" );
+      exit(1);  
+    }
     output_bed_windows( aln, bed_fn, chr_mask, tvs_only );
   }
   else {
@@ -681,18 +693,17 @@ void output_bed_windows( const QUADAP aln, const char* bed_fn,
 
   f = fileOpen( bed_fn, "r" );
   while( fgets( line, MAX_LINE_LEN, f ) != NULL ) {
-    if ( sscanf( line, "%s %u %u", chr, &start, &end ) 
-	 == 3 ) {
+    if ( sscanf( line, "%s %u %u", chr, &start, &end ) == 3 ) {
       /* The right chromosome? */
       if ( strcmp( chr, chr_mask ) == 0 ) {
-	/* Range check */
-	if ( start < 0 ) {
-	  start = 0;
-	}
-	if ( end > aln->h_len ) {
-	  end = aln->h_len;
-	}
-	output_summary( aln, start, end, tvs_only );
+        /* Range check */
+        if ( start < 0 ) {
+            start = 0;
+        }
+        if ( end > aln->h_len ) {
+            end = aln->h_len;
+        }
+        output_summary( aln, start, end, tvs_only );
       }
     }
   }
