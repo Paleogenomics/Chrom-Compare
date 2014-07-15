@@ -698,12 +698,14 @@ void output_bed_windows( const QUADAP aln, const char* bed_fn,
       if ( strcmp( chr, chr_mask ) == 0 ) {
         /* Range check */
         if ( start < 0 ) {
-            start = 0;
+          start = 0;
         }
         if ( end > aln->h_len ) {
-            end = aln->h_len;
+          end = aln->h_len;
         }
-        output_summary( aln, start, end, tvs_only );
+        if ( end > start ) {
+          output_summary( aln, start, end, tvs_only );
+        }
       }
     }
   }

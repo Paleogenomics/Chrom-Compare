@@ -15,7 +15,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -31,7 +30,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -47,7 +45,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -63,7 +60,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -79,7 +75,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -95,7 +90,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -111,7 +105,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -127,7 +120,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -143,7 +135,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -159,7 +150,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -175,7 +165,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -191,7 +180,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -207,7 +195,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -223,7 +210,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -239,7 +225,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -255,7 +240,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -272,7 +256,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -288,7 +271,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -304,7 +286,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -320,7 +301,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -336,7 +316,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -353,7 +332,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -370,7 +348,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -387,7 +364,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -403,7 +379,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -419,7 +394,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -435,7 +409,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -451,7 +424,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -467,7 +439,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -484,7 +455,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -501,7 +471,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -518,7 +487,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -535,7 +503,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -552,7 +519,6 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
-
 else
     echo "  * PASS"
 fi
@@ -569,7 +535,54 @@ if [ "$TEST_STR" != "$PASS_STR" ];
 then
     echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
     COUNTER=$[$COUNTER + 1]
+else
+    echo "  * PASS"
+fi
 
+
+# Test 36
+echo 'Test 36: 1,2,3,4 input files, -b option.'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/second.fa -3 t/third.fa -4 t/fourth.fa -b t/all_regions.bed -c chr'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'10 30 18 1 0 0 0 0 0 1\n50 80 28 1 0 1 0 0 0 0\n100 110 9 0 0 1 0 0 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+else
+    echo "  * PASS"
+fi
+
+
+# Test 37
+echo 'Test 37: 1,2,3,4 input files, -b option. -c different chromosome.'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/second.fa -3 t/third.fa -4 t/fourth.fa -b t/all_regions.bed -c chrm'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$''
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
+else
+    echo "  * PASS"
+fi
+
+
+# Test 38
+echo 'Test 38: 1,2,3,4 input files, -b option. region extends out of range.'
+TOTAL=$[$TOTAL + 1]
+TEST_CMD='./quad-aln-report -1 t/first.fa -2 t/second.fa -3 t/third.fa -4 t/fourth.fa -b t/all_regions3.bed -c chr'
+echo "  $TEST_CMD"
+TEST_STR=`${TEST_CMD}`
+PASS_STR=$'10 30 18 1 0 0 0 0 0 1\n50 80 28 1 0 1 0 0 0 0\n100 110 9 0 0 1 0 0 0 0'
+if [ "$TEST_STR" != "$PASS_STR" ];
+then
+    echo "  * FAIL: expected '$PASS_STR', got '$TEST_STR'"
+    COUNTER=$[$COUNTER + 1]
 else
     echo "  * PASS"
 fi
