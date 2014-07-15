@@ -21,11 +21,13 @@ typedef struct aln_chrs {
   ChrP anc_cp; // the ancestral chromosome
   ChrP foc_cp; // the focal chromosome
   ChrP cps[NUM_ALN_CHRS]; // aligned chromosomes
+  char* mask;   // which positions to consider, optional
   size_t num_cps;
 } Aln_Chrs;
 typedef struct aln_chrs* Aln_ChrsP;
 
 FILE * fileOpen(const char *name, char access_mode[]);
+void mask_cpg( Aln_ChrsP acsp );
 void fasta2chr( const char* fn, ChrP cp );
 inline int valid_base( char b );
 int cpg_site( const Aln_ChrsP acsp, const size_t pos );
@@ -52,7 +54,8 @@ int main( int argc, char* argv[] ) {
   char foc_chr_fn[MAX_FN_LEN+1];
   char id_to_assign[MAX_ID_LEN];
   Aln_ChrsP acsp;
-  int ich, input_num, cpg_mask;
+  int ich, input_num;
+  int cpg_mask = 0;
   size_t chr_inx = 0;
   int min_diff = DEFAULT_MIN_DIFF;
 
@@ -96,6 +99,10 @@ int main( int argc, char* argv[] ) {
   acsp->foc_cp = (ChrP)malloc(sizeof(Chr));
   fasta2chr( foc_chr_fn, acsp->foc_cp );
 
+  /* Init the mask */
+  acsp->mask = (char*)malloc((MAX_CHR_LEN+1)*sizeof(char));
+  memset( acsp->mask, 1, MAX_CHR_LEN );
+
   /* Parse each aligned chromsome */
   for ( input_num = optind; input_num < argc; input_num++ ) {
     acsp->cps[chr_inx] = (ChrP)malloc(sizeof(Chr));
@@ -104,9 +111,38 @@ int main( int argc, char* argv[] ) {
   }
   acsp->num_cps = chr_inx;
 
+  /* If CpG mask is requested, do it! */
+  if ( cpg_mask ) {
+    mask_cpg( acsp );
+  }
+
   /* Output the focal = ancestral != everything else sites */
   output_anc_sites( acsp, min_diff, cpg_mask, id_to_assign );
   exit( 0 );
+}
+
+void mask_cpg( Aln_ChrsP acsp ) {
+  size_t pos;
+  size_t cn;
+  for ( pos = 0; pos < acsp->anc_cp->len; pos++ ) {
+    if ( (acsp->anc_cp->seq[pos] == 'G') &&
+	 (acsp->anc_cp->seq[pos-1] == 'C') ) {
+      acsp->mask[pos]   = 0;
+      acsp->mask[pos-1] = 0;
+    }
+    if ( (acsp->foc_cp->seq[pos] == 'G') &&
+	 (acsp->foc_cp->seq[pos-1] == 'C') ) {
+      acsp->mask[pos]   = 0;
+      acsp->mask[pos-1] = 0;
+    }
+    for( cn = 0; cn < acsp->num_cps; cn++ ) {
+      if ( (acsp->cps[cn]->seq[pos] == 'G') &&
+	   (acsp->cps[cn]->seq[pos-1] == 'C') ) {
+	acsp->mask[pos]   = 0;
+	acsp->mask[pos-1] = 0;
+      }
+    }
+  }
 }
 
 /** fileOpen **/
@@ -215,7 +251,8 @@ void output_anc_sites( const Aln_ChrsP acsp,
     diff    = 0;
     /* Are ancestral and focal bases the same? */
     if (valid_base(acsp->anc_cp->seq[pos]) &&
-	(acsp->anc_cp->seq[pos] == acsp->foc_cp->seq[pos])) {
+	(acsp->anc_cp->seq[pos] == acsp->foc_cp->seq[pos]) &&
+	(acsp->mask[pos]) ) {
       anc_b = acsp->anc_cp->seq[pos];
       /* Are none of the other bases ancestral? */
       for( i = 0; i < acsp->num_cps; i++ ) {
