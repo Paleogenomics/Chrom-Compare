@@ -41,7 +41,7 @@ void help( void ) {
 
 void write_fasta( const char* id, const char* desc,
                   const char* seq, const size_t len,
-		  int reg_start, int reg_end );
+      int reg_start, int reg_end );
 int main( int argc, char* argv[] ) {
   extern char* optarg;
   int ich, base_inx, rand_inx;
@@ -112,24 +112,24 @@ int main( int argc, char* argv[] ) {
      the comparison guy and human and chimp */
   while( fgets( line, MAX_LINE_LEN, stdin ) != NULL ) {
     if ( (line2pul( line, pp ) == 0) &&
-	 (strcmp( pp->chr, target_chr ) == 0) ) {
+         (strcmp( pp->chr, target_chr ) == 0) ) {
       /* Check the coverage cutoffs first */
       if ( (pp->cov >= lowcovc) &&
-	   (pp->cov <= covc) ) {
-	/* Do I want the BEST base */
-	if ( best_base ) {
-	  base_inx = best_base_from_pul( pp, qcp, mqc, covc );
-	}
-	/* Or a random base? */
-	else {
-	  base_inx = rand_good_base_from_pul( pp, qcp, mqc, covc );
-	}
-	if ( base_inx >= 0 ) {
-	  cp->seq[pp->pos - 1] = inx2base( base_inx );
-	}
-	if ( pp->pos > chr_len ) {
-	  chr_len = pp->pos;
-	}
+           (pp->cov <= covc) ) {
+        /* Do I want the BEST base */
+        if ( best_base ) {
+          base_inx = best_base_from_pul( pp, qcp, mqc, covc );
+        }
+        /* Or a random base? */
+        else {
+          base_inx = rand_good_base_from_pul( pp, qcp, mqc, covc );
+        }
+        if ( base_inx >= 0 ) {
+          cp->seq[pp->pos - 1] = inx2base( base_inx );
+        }
+        if ( pp->pos > chr_len ) {
+          chr_len = pp->pos;
+        }
       }
     }
   }
@@ -142,7 +142,7 @@ int main( int argc, char* argv[] ) {
 
 void write_fasta( const char* id, const char* desc,
                   const char* seq, const size_t len,
-		  int reg_start, int reg_end ) {
+      int reg_start, int reg_end ) {
   size_t pos;
   size_t line_pos = 0;
   if ( reg_start == -1 ) { // was never set by user, set it to 0
