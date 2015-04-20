@@ -1,3 +1,6 @@
+#ifndef PILEUP_H
+#define PILEUP_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -60,3 +63,4 @@ QcutsP dummyQcutsP( void );
 FILE * fileOpen(const char *name, char access_mode[]);
 void mask_from_fn( const char* mask_fn, char* mask, const char* chr_mask );
 
+#endif /* PILEUP_H */

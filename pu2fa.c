@@ -11,7 +11,9 @@
 #define COV_CUT (10)
 #define LOW_COV_CUT (1)
 #define MAX_CHR_LEN (250000000)
+#ifndef MAX_ID_LEN
 #define MAX_ID_LEN (128)
+#endif
 #define MAX_FN_LEN (512)
 #define MAX_AXT_LINE_LEN (11000000)
 #define FASTA_ROW_LEN (60)
