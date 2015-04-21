@@ -20,6 +20,6 @@ pu2fa: pu2fa.c pileup.c pileup.h
 
 tests:
 	./test_quad.sh
-
+	./test_pu2fa.sh
 clean:
 	rm -f tri-aln-report quad-aln-report find-ancestral pu2fa

@@ -42,19 +42,25 @@ void help( void ) {
 void write_fasta( const char* id, const char* desc,
                   const char* seq, const size_t len,
       int reg_start, int reg_end );
+
 int main( int argc, char* argv[] ) {
   extern char* optarg;
   int ich, base_inx, rand_inx;
   size_t chr_len = 0;
   int reg_start = -1;
   int reg_end = -1;
-  char qcut_fn[MAX_FN_LEN+1];
+
+  char qcut_fn[MAX_FN_LEN+1]; // filename of qcut file (-q option)
+  // initialize the string so that we can check later whether the -q option was
+  // supplied
+  qcut_fn[0] = '\0';
+
   char target_chr[MAX_ID_LEN+1];
   char line[MAX_LINE_LEN+1];
   unsigned int covc = COV_CUT;
   unsigned int lowcovc = LOW_COV_CUT;
   unsigned int mqc  = MAP_QUAL_CUT;
-  QcutsP qcp;
+  QcutsP qcp; // struct storing the quality cutoffs
   PulP pp;
   ChrP cp;
   int best_base = 0;
@@ -105,7 +111,8 @@ int main( int argc, char* argv[] ) {
   cp->seq = (char*)malloc((MAX_CHR_LEN+1) * sizeof(char));
   memset( cp->seq, 'N', MAX_CHR_LEN );
 
-  /* Get the base-specific quality score cutoffs for this library */
+  /* If qcut file provided, parse it to get the base-specific quality score
+   * cutoffs for this library; otherwise, use defaults. */
   qcp = parse_q_score_cut( qcut_fn );
 
   /* Go through the pileup output, getting bases for

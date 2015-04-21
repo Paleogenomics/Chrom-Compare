@@ -503,48 +503,57 @@ QcutsP parse_q_score_cut( const char* fn ) {
 
   qcp = (QcutsP)malloc(sizeof(Qcuts));
 
-  f = fileOpen( fn, "r" );
+  if (fn[0] != '\0') {
+    f = fileOpen( fn, "r" );
 
-  /* First line is the A+T- line */
-  fgets( line, MAX_LINE_LEN, f );
-  if ( sscanf( line, "%s %u %f",
-               base, &qcp->Aqcut, &qcp->Ap ) != 3 ) {
-    fprintf( stderr,
-             "Problem parsing Q-score cutoff file line: %s\n",
-             line );
-    exit( 1 );
+    /* First line is the A+T- line */
+    fgets( line, MAX_LINE_LEN, f );
+    if ( sscanf( line, "%s %u %f",
+                 base, &qcp->Aqcut, &qcp->Ap ) != 3 ) {
+      fprintf( stderr,
+               "Problem parsing Q-score cutoff file line: %s\n",
+               line );
+      exit( 1 );
+    }
+
+    /* First line is the C+G- line */
+    fgets( line, MAX_LINE_LEN, f );
+    if ( sscanf( line, "%s %u %f",
+                 base, &qcp->Cqcut, &qcp->Cp ) != 3 ) {
+      fprintf( stderr,
+               "Problem parsing Q-score cutoff file line: %s\n",
+               line );
+      exit( 1 );
+    }
+
+    /* First line is the G+C- line */
+    fgets( line, MAX_LINE_LEN, f );
+    if ( sscanf( line, "%s %u %f",
+                 base, &qcp->Gqcut, &qcp->Gp ) != 3 ) {
+      fprintf( stderr,
+               "Problem parsing Q-score cutoff file line: %s\n",
+               line );
+      exit( 1 );
+    }
+
+    /* First line is the T+A- line */
+    fgets( line, MAX_LINE_LEN, f );
+    if ( sscanf( line, "%s %u %f",
+                 base, &qcp->Tqcut, &qcp->Tp ) != 3 ) {
+      fprintf( stderr,
+               "Problem parsing Q-score cutoff file line: %s\n",
+               line );
+      exit( 1 );
+    }
+    fclose( f );
+  }
+  else {
+    qcp->Aqcut = 0; qcp->Ap = 1.0;
+    qcp->Cqcut = 0; qcp->Cp = 1.0;
+    qcp->Gqcut = 0; qcp->Gp = 1.0;
+    qcp->Tqcut = 0; qcp->Tp = 1.0;
   }
 
-  /* First line is the C+G- line */
-  fgets( line, MAX_LINE_LEN, f );
-  if ( sscanf( line, "%s %u %f",
-               base, &qcp->Cqcut, &qcp->Cp ) != 3 ) {
-    fprintf( stderr,
-             "Problem parsing Q-score cutoff file line: %s\n",
-             line );
-    exit( 1 );
-  }
-
-  /* First line is the G+C- line */
-  fgets( line, MAX_LINE_LEN, f );
-  if ( sscanf( line, "%s %u %f",
-               base, &qcp->Gqcut, &qcp->Gp ) != 3 ) {
-    fprintf( stderr,
-             "Problem parsing Q-score cutoff file line: %s\n",
-             line );
-    exit( 1 );
-  }
-
-  /* First line is the T+A- line */
-  fgets( line, MAX_LINE_LEN, f );
-  if ( sscanf( line, "%s %u %f",
-               base, &qcp->Tqcut, &qcp->Tp ) != 3 ) {
-    fprintf( stderr,
-             "Problem parsing Q-score cutoff file line: %s\n",
-             line );
-    exit( 1 );
-  }
-  fclose( f );
   return qcp;
 }
 
