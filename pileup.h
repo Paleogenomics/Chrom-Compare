@@ -12,12 +12,14 @@
 #define MAX_ID_LEN (256)
 #define MAX_CHR_LEN (250000000)
 
+typedef enum { false, true } bool;
+
 typedef struct qcuts {
   unsigned int Aqcut;
   unsigned int Cqcut;
   unsigned int Gqcut;
   unsigned int Tqcut;
-  float Ap;  
+  float Ap;
   float Cp;
   float Gp;
   float Tp;
@@ -48,7 +50,7 @@ typedef struct subcount* SCP;
 inline char revcom_base( const char base );
 inline size_t base_inx( char b );
 int best_base_from_pul( PulP pp, QcutsP qcp,
-			unsigned int mqc, unsigned int covc );
+			unsigned int mqc, unsigned int covc, bool weighted );
 int rand_good_base_from_pul( PulP pp, QcutsP qcp,
 			     unsigned int mqc, unsigned int covc );
 

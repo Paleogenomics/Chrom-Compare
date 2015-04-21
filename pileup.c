@@ -36,17 +36,28 @@ inline char inx2base( const size_t inx ) {
    Returns the single most populous base, unless that is
    an N. If there is a two way tie, returns a random one
    of these two. If there is a three-way tie, returns
-   -1. 
-   -1 signifies no good base 
+   -1.
+
+   Arguments:
+   PulP pp -- data structure containing data from one position of pileup
+   QcutsP qcp -- coverage cutoffs from QCUT file or default
+   unsigned int mqc -- minimum mapping quality; that is, don't consider any base
+     with a mapping quality score less than this value
+   unsigned int covc -- maximum coverage; i.e., return -1 if position coverage
+     is greater than this value
+   bool weighted -- true if quality scores should be used to weight each base,
+     false otherwise
+
+   -1 signifies no good base
 */
-int best_base_from_pul( PulP pp, QcutsP qcp,
-			unsigned int mqc, unsigned int covc ) {
+int best_base_from_pul( PulP pp, QcutsP qcp, unsigned int mqc,
+        unsigned int covc, bool weighted ) {
   size_t base_counts[5];
-  size_t cov, i;
+  size_t cov, i, this_base_index;
   int rand_inx;
   size_t f_counts, s_counts, t_counts, f_inx, s_inx, t_inx;
 
-  cov = pp->cov;
+  cov = pp->cov; // position coverage
 
   if ( cov > covc ) {
     return -1;
@@ -66,11 +77,20 @@ int best_base_from_pul( PulP pp, QcutsP qcp,
 		     pp->base_quals[i],
 		     pp->strands[i],
 		     qcp ) ) {
-      base_counts[ base_inx(pp->bases[i]) ]++;
+        this_base_index = base_inx(pp->bases[i]);
+
+        // if not using weights, add one to the base count for this base. if
+        // using weights, add base and map quality scores to base_counts
+        if (weighted) {
+          base_counts[this_base_index] += pp->base_quals[i] + pp->map_quals[i];
+        }
+        else {
+          base_counts[this_base_index]++;
+        }
     }
   }
 
-  /* Find f_inx & s_inx - the indeces of the most populous and
+  /* Find f_inx & s_inx - the indices of the most populous and
      second most populous bases */
   f_counts = 0;
   s_counts = 0;

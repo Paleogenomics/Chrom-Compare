@@ -25,14 +25,15 @@ typedef struct chr {
 typedef struct chr* ChrP;
 
 void help( void ) {
-  printf( "pu2fa -q <q-score cutoff filename> -c <chr name> -C <max coverage; inclusive> -b\n" );
+  printf( "pu2fa -q <q-score cutoff filename> -c <chr name> -C <max coverage; inclusive>\n" );
   printf( "      -l <minimum coverage; inclusive>\n" );
   printf( "      -m <map-quality cutoff; default = %d>\n", MAP_QUAL_CUT );
   printf( "      -s <region start> -e <region end>\n" );
+  printf( "      -b use most frequently-encountered base rather than random base\n" );
+  printf( "      -w use best base, determined by additive quality scores\n" );
   printf( "Takes pileup output as produced from samtools mpileup -s and writes a\n" );
   printf( "fasta sequence of the aligned reads from the pileup output. Picks\n" );
   printf( "randomly the first base to pass the quality score thresholding.\n" );
-  printf( "If -b is specified, returns the best base and not a random one.\n" );
   printf( "By default, writes the entire fasta sequence, even if only a small\n" );
   printf( "part of it is given as in mpileup input. As small region can\n" );
   printf( "be specified by using the -s and -e options (1-based coordinates)\n" );
@@ -63,7 +64,8 @@ int main( int argc, char* argv[] ) {
   QcutsP qcp; // struct storing the quality cutoffs
   PulP pp;
   ChrP cp;
-  int best_base = 0;
+  bool best_base = false; // holds option whether to use best base
+  bool weighted_best_base = false; // holds option whether to use weighted best
 
   /* Process command line arguments */
   if ( argc == 1 ) {
@@ -71,7 +73,7 @@ int main( int argc, char* argv[] ) {
     exit( 0 );
   }
 
-  while( (ich=getopt( argc, argv, "q:C:c:l:m:s:e:b" )) != -1 ) {
+  while( (ich=getopt( argc, argv, "q:C:c:l:m:s:e:b:w" )) != -1 ) {
     switch(ich) {
     case 'q' :
       strcpy( qcut_fn, optarg );
@@ -89,7 +91,11 @@ int main( int argc, char* argv[] ) {
       mqc = atoi(optarg);
       break;
     case 'b' :
-      best_base = 1;
+      best_base = true;
+      break;
+    case 'w' :
+      weighted_best_base = true;
+      best_base = true;
       break;
     case 's' :
       reg_start = atoi(optarg);
@@ -125,7 +131,7 @@ int main( int argc, char* argv[] ) {
            (pp->cov <= covc) ) {
         /* Do I want the BEST base */
         if ( best_base ) {
-          base_inx = best_base_from_pul( pp, qcp, mqc, covc );
+          base_inx = best_base_from_pul(pp, qcp, mqc, covc, weighted_best_base);
         }
         /* Or a random base? */
         else {
