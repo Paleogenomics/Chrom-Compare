@@ -44,8 +44,8 @@ while( chomp( $l = <WI> ) ) {
 	     (($first_diff_total + $second_diff_total) > $opt_m) ) {
 	    $bin = int(100 * ($second_diff_total/(($first_diff_total + $second_diff_total)/2)));
 	    $hist[$bin]++;
+	    $t++;
 	}
-	$t++;
     }
     
 }
