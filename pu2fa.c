@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <limits.h>
+#include <time.h>
 #include "pileup.h"
 
 #define MAX_LINE_LEN (10240)
@@ -66,6 +67,9 @@ int main( int argc, char* argv[] ) {
   ChrP cp;
   bool best_base = false; // holds option whether to use best base
   bool weighted_best_base = false; // holds option whether to use weighted best
+
+  /* Seed rand() for choosing random bases */
+  srand(time(NULL));
 
   /* Process command line arguments */
   if ( argc == 1 ) {
