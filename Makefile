@@ -1,6 +1,6 @@
 CC=gcc
 #CFLAGS=-O2
-CFLAGS=-g
+CFLAGS=-g -std=gnu89
 
 all: tri-aln-report quad-aln-report find-ancestral pu2fa
 
