@@ -232,6 +232,16 @@ int line2pul( char* line, PulP pp ) {
 	       raw_base_quals,
 	       raw_map_quals ) == 7 ) {
     
+    /* Newer versions of SAMTools now report the last 3 fields as asterisks
+       when there is no coverage (old behavior was to just output first
+       four fields). Check for this.
+    */
+    if (pp->cov == 0 && strcmp(raw_base_field, "*") == 0 && 
+        strcmp(raw_base_quals, "*") == 0 && strcmp(raw_map_quals, "*") == 0){
+        pp->base_quals[0] = 0;
+        pp->map_quals[0] = 0;
+        return 0;
+    }
 
     /* Parse the raw_base_field */
     field_len = strlen( raw_base_field );
@@ -371,26 +381,27 @@ int line2pul( char* line, PulP pp ) {
 	return 1;
       }
     }
+    if (pp->cov > 0){
+	    /* Check to see if we got all the bases we were
+	       expecting */
+	    if ( cur_base_num != pp->cov ) {
+	      fprintf( stderr, 
+		       "Incorrect number of bases read in: %s\n",
+		       line );
+	      return 1;
+	    }
+	    
+	    /* Check length of raw_base_quals & raw_map_quals
+	       fields */
+	    if ( (strlen( raw_base_quals ) != cur_base_num) &&
+		 (strlen( raw_map_quals )  != cur_base_num) ) {
+	      fprintf( stderr, 
+		       "Incorrect number of base or map quals in: %s\n",
+		       line );
+	      return 1;
+	    }
+    }
 
-    /* Check to see if we got all the bases we were
-       expecting */
-    if ( cur_base_num != pp->cov ) {
-      fprintf( stderr, 
-	       "Incorrect number of bases read in: %s\n",
-	       line );
-      return 1;
-    }
-    
-    /* Check length of raw_base_quals & raw_map_quals
-       fields */
-    if ( (strlen( raw_base_quals ) != cur_base_num) &&
-	 (strlen( raw_map_quals )  != cur_base_num) ) {
-      fprintf( stderr, 
-	       "Incorrect number of base or map quals in: %s\n",
-	       line );
-      return 1;
-    }
-    
     /* parse raw_base_quals & raw_map_quals field */
     for( i = 0; i < pp->cov; i++ ) {
       pp->base_quals[i] = (raw_base_quals[i] - 33);
