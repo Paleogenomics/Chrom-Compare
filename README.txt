@@ -121,7 +121,7 @@ Options:
       -q <q-score cutoff filename>
       -C <max coverage; inclusive>
       -l <minimum coverage; inclusive>
-      -m <map-quality cutoff; default = 
+      -m <map-quality cutoff; default = 30
       -s <region start> -e <region end>
       -b use most frequently-encountered base rather than random base
       -w use best base, determined by additive quality scores
