@@ -109,3 +109,27 @@ multiple chromosomes) and writes out:
     3) Standard Error from weighted block jackknife
     4) Z-Score (raw from D and Standard Error, no correction for mulitple test)
 
+*** pu2fa ***
+Write a pseudo-haploid sequence (fasta format) of a chromosome from
+a pileup file (or stdout) from samtools mpileup.
+
+Usage: pu2fa [options] -c <chr name> {pileup file | stdin}
+
+Required:
+      -c chromosome name to output as fasta.
+Options:
+      -q <q-score cutoff filename>
+      -C <max coverage; inclusive>
+      -l <minimum coverage; inclusive>
+      -m <map-quality cutoff; default = 
+      -s <region start> -e <region end>
+      -b use most frequently-encountered base rather than random base
+      -w use best base, determined by additive quality scores
+      
+Takes pileup output as produced from samtools mpileup -s and writes a
+fasta sequence of the aligned reads from the pileup output for one
+chromosome (-c).
+Picks randomly the first base to pass the quality score thresholding.
+By default, writes the entire fasta sequence, even if only a small
+part of it is given as in mpileup input. A small region can
+be specified by using the -s and -e options (1-based coordinates)
