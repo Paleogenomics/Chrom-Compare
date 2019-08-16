@@ -26,17 +26,21 @@ typedef struct chr {
 typedef struct chr* ChrP;
 
 void help( void ) {
-  printf( "pu2fa -q <q-score cutoff filename> -c <chr name> -C <max coverage; inclusive>\n" );
+  printf( "usage: pu2fa [options] -c <chr name> <pileup file | stdin>\n" );
+  printf( "      -c <chr name>; required\n" );
+  printf( "      -q <q-score cutoff filename>\n" );
+  printf( "      -C <max coverage; inclusive>\n" );
   printf( "      -l <minimum coverage; inclusive>\n" );
   printf( "      -m <map-quality cutoff; default = %d>\n", MAP_QUAL_CUT );
   printf( "      -s <region start> -e <region end>\n" );
   printf( "      -b use most frequently-encountered base rather than random base\n" );
   printf( "      -w use best base, determined by additive quality scores\n" );
   printf( "Takes pileup output as produced from samtools mpileup -s and writes a\n" );
-  printf( "fasta sequence of the aligned reads from the pileup output. Picks\n" );
-  printf( "randomly the first base to pass the quality score thresholding.\n" );
+  printf( "fasta sequence of the aligned reads from the pileup output for one\n" );
+  printf( "chromosome (-c).\n" );
+  printf( "Picks randomly the first base to pass the quality score thresholding.\n" );
   printf( "By default, writes the entire fasta sequence, even if only a small\n" );
-  printf( "part of it is given as in mpileup input. As small region can\n" );
+  printf( "part of it is given as in mpileup input. A small region can\n" );
   printf( "be specified by using the -s and -e options (1-based coordinates)\n" );
   return;
 }
