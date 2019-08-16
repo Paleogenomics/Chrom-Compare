@@ -26,15 +26,17 @@ typedef struct chr {
 typedef struct chr* ChrP;
 
 void help( void ) {
-  printf( "usage: pu2fa [options] -c <chr name> <pileup file | stdin>\n" );
-  printf( "      -c <chr name>; required\n" );
+  printf( "Usage: pu2fa [options] -c <chr name> {pileup file | stdin}\n\n" );
+  printf( "Required:\n" );
+  printf( "      -c chromosome name to output as fasta.\n" );
+  printf( "Options:\n" );
   printf( "      -q <q-score cutoff filename>\n" );
   printf( "      -C <max coverage; inclusive>\n" );
   printf( "      -l <minimum coverage; inclusive>\n" );
   printf( "      -m <map-quality cutoff; default = %d>\n", MAP_QUAL_CUT );
   printf( "      -s <region start> -e <region end>\n" );
   printf( "      -b use most frequently-encountered base rather than random base\n" );
-  printf( "      -w use best base, determined by additive quality scores\n" );
+  printf( "      -w use best base, determined by additive quality scores\n\n" );
   printf( "Takes pileup output as produced from samtools mpileup -s and writes a\n" );
   printf( "fasta sequence of the aligned reads from the pileup output for one\n" );
   printf( "chromosome (-c).\n" );
